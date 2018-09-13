@@ -89,12 +89,12 @@ class GitlabHookController < ActionController::Base
 
 
   def get_repository_name
-    return params[:repository_name] && params[:repository_name].downcase
+    return params[:project][:name] && params[:project][:name].downcase
   end
 
 
   def get_repository_namespace
-    return params[:repository_namespace] && params[:repository_namespace].downcase
+    return params[:project][:namespace] && params[:project][:namespace].downcase
   end
 
 
@@ -110,7 +110,7 @@ class GitlabHookController < ActionController::Base
   # Gets the project identifier from the querystring parameters and if that's not supplied, assume
   # the GitLab repository identifier is the same as the project identifier.
   def get_project_identifier
-    identifier = params[:project_id] || params[:repository_name]
+    identifier = params[:project_id] || params[:project][:name]
     raise ActiveRecord::RecordNotFound, 'Project identifier not specified' if identifier.nil?
     return identifier
   end
@@ -152,7 +152,7 @@ class GitlabHookController < ActionController::Base
     raise TypeError, 'Local repository path is not set' unless Setting.plugin_redmine_gitlab_hook['local_repositories_path'].to_s.present?
 
     identifier = get_repository_identifier
-    remote_url = params[:repository][:git_ssh_url]
+    remote_url = params[:project][:git_ssh_url]
     prefix = Setting.plugin_redmine_gitlab_hook['git_command_prefix'].to_s
 
     raise TypeError, 'Remote repository URL is null' unless remote_url.present?
