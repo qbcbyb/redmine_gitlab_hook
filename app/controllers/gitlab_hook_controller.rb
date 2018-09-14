@@ -55,8 +55,8 @@ class GitlabHookController < ActionController::Base
     end
 
     return success
-  ensure
-    logfile.unlink
+# TODO:  ensure
+#     logfile.unlink
   end
 
 
