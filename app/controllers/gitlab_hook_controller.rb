@@ -43,7 +43,7 @@ class GitlabHookController < ActionController::Base
     success = system("#{command} > #{logfile.path} 2>&1")
     output_from_command = File.readlines(logfile.path)
     if success
-      logger.debug { "GitLabHook: Command output: #{output_from_command.inspect}"}
+      logger.error { "GitLabHook: Command output: #{output_from_command.inspect}"}
     else
       logger.error { "GitLabHook: Command '#{command}' didn't exit properly. Full output: #{output_from_command.inspect}"}
     end
@@ -161,7 +161,8 @@ class GitlabHookController < ActionController::Base
       FileUtils.mkdir_p(local_url)
       command = clone_repository(prefix, remote_url, local_url)
       unless exec(command)
-        exec('whoami && echo $HOME && s')
+        exec('whoami')
+        exec('echo $HOME')
         raise RuntimeError, "Can't clone URL #{remote_url},command: #{command}, success: #{success}"
       end
     end
