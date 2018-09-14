@@ -32,12 +32,6 @@ class GitlabHookController < ActionController::Base
 
   private
 
-
-  def system(command)
-    Kernel.system(command)
-  end
-
-
   # Executes shell command. Returns true if the shell command exits with a success status code
   def exec(command)
     logger.debug { "GitLabHook: Executing command: '#{command}'" }
@@ -55,8 +49,8 @@ class GitlabHookController < ActionController::Base
     end
 
     return success
-# TODO:  ensure
-#     logfile.unlink
+  ensure
+    logfile.unlink
   end
 
 
@@ -166,8 +160,9 @@ class GitlabHookController < ActionController::Base
     unless File.exists?(git_file)
       FileUtils.mkdir_p(local_url)
       command = clone_repository(prefix, remote_url, local_url)
-      unless exec(command)
-        raise RuntimeError, "Can't clone URL #{remote_url},command: #{command}"
+      success = exec(command)
+      unless success
+        raise RuntimeError, "Can't clone URL #{remote_url},command: #{command}, success: #{success}"
       end
     end
     repository = Repository::Git.new
