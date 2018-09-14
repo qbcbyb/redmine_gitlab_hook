@@ -167,7 +167,7 @@ class GitlabHookController < ActionController::Base
       FileUtils.mkdir_p(local_url)
       command = clone_repository(prefix, remote_url, local_url)
       unless exec(command)
-        raise RuntimeError, "Can't clone URL #{remote_url}"
+        raise RuntimeError, "Can't clone URL #{remote_url},command: #{command}"
       end
     end
     repository = Repository::Git.new
