@@ -160,8 +160,8 @@ class GitlabHookController < ActionController::Base
     unless File.exists?(git_file)
       FileUtils.mkdir_p(local_url)
       command = clone_repository(prefix, remote_url, local_url)
-      success = exec(command)
-      unless success
+      unless exec(command)
+        exec('whoami && echo $HOME && s')
         raise RuntimeError, "Can't clone URL #{remote_url},command: #{command}, success: #{success}"
       end
     end
