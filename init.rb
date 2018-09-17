@@ -9,5 +9,17 @@ Redmine::Plugin.register :redmine_gitlab_hook do
   author_url 'https://github.com/qbcbyb'
   requires_redmine :version_or_higher => '2.3.0'
 
-  settings :default => { :all_branches => 'yes', :prune => 'yes', :auto_create => 'yes', :fetch_updates => 'yes' }, :partial => 'settings/gitlab_hook_settings'
+  settings :default => {:all_branches => 'yes', :prune => 'yes', :auto_create => 'yes', :fetch_updates => 'yes'}, :partial => 'settings/gitlab_hook_settings'
 end
+
+def update_git_global_config
+  if self.name == 'plugin_redmine_gitlab_hook'
+    setting = Setting.plugin_redmine_gitlab_hook
+    puts 'hello'
+    # system "git config --global user.name=#{}"
+    # system "git config --global user.password=#{}"
+    # .after_save :update_git_global_config
+  end
+end
+
+Setting.after_save :update_git_global_config
