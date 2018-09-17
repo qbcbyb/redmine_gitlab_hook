@@ -35,4 +35,17 @@
         <%= check_box_tag('settings[fetch_updates]', 'yes', settings['fetch_updates'] == 'yes' ) %>
         <em class="info"><%= l('fetch_updates.description') %></em>
     </p>
+
+    <p>
+        <%= content_tag(:label, l('git_user_name.label')) %>
+        <%= text_field_tag('settings[git_user_name]', settings['git_user_name'], :size => 50) %>
+        <em class="info"><%= l('git_user_name.description') %></em>
+    </p>
+
+    <p>
+        <%= content_tag(:label, l('git_user_password.label')) %>
+        <%= text_field_tag('settings[git_user_password]', settings['git_user_password'], :size => 50) %>
+        <em class="info"><%= l('git_user_password.description') %></em>
+    </p>
+    
 </fieldset>
