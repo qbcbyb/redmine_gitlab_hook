@@ -19,3 +19,9 @@ zh:
   fetch_updates:
     label: 从存储库中获取更新
     description: '该选项用于从远端存储库中获取更新内容。 若存储库共享，请将其设置为“否”（例如，Gitlab 和 Redmine 在同一台设备上）。'
+  git_user_name:
+    label: Git用户名
+    description: 'Git仓库用户名'
+  git_user_password:
+    label: Git用户密码
+    description: 'Git仓库用户密码'

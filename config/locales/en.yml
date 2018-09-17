@@ -19,3 +19,9 @@ en:
   fetch_updates:
     label: Fetch updates from repository
     description: 'This option fetches updates from remote repository. Set it to "No" if repository shared (for example if Gitlab and Redmine on the same machine).'
+  git_user_name:
+    label: Git User Name
+    description: 'User name of git repository'
+  git_user_password:
+    label: Git User Password
+    description: 'User password of git repository'
