@@ -25,3 +25,6 @@ en:
   git_user_password:
     label: Git User Password
     description: 'User password of git repository'
+  git_remote_url:
+    label: Git Repository Url
+    description: 'Git repository remote Url'

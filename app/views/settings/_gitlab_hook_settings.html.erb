@@ -44,8 +44,14 @@
 
     <p>
         <%= content_tag(:label, l('git_user_password.label')) %>
-        <%= text_field_tag('settings[git_user_password]', settings['git_user_password'], :size => 50) %>
+        <%= password_field_tag('settings[git_user_password]', settings['git_user_password'], :size => 50) %>
         <em class="info"><%= l('git_user_password.description') %></em>
+    </p>
+
+    <p>
+        <%= content_tag(:label, l('git_remote_url.label')) %>
+        <%= text_field_tag('settings[git_remote_url]', settings['git_remote_url'], :size => 50) %>
+        <em class="info"><%= l('git_remote_url.description') %></em>
     </p>
     
 </fieldset>

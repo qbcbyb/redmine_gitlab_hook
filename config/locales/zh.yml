@@ -25,3 +25,7 @@ zh:
   git_user_password:
     label: Git用户密码
     description: 'Git仓库用户密码'
+  git_remote_url:
+    label: Git仓库Url
+    description: 'Git仓库远端Url'
+
