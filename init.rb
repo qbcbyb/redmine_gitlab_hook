@@ -1,4 +1,3 @@
-require 'redmine'
 require_dependency 'redmine_gitlab_hook/hooks'
 
 Redmine::Plugin.register :redmine_gitlab_hook do
