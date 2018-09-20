@@ -20,6 +20,7 @@ Redmine::Plugin.register :redmine_gitlab_hook do
       :client_id => "",
       :client_secret => "",
       :oauth_authentification => false,
+      :gitlab_api_v4 => false,
       :allowed_domains => "",
       :register_enable => false
   }, :partial => 'settings/gitlab_hook_settings'

@@ -21,7 +21,7 @@ class GitlabOauthController < AccountController
     else
       token = oauth_client.auth_code.get_token(params[:code], :redirect_uri => oauth_gitlab_callback_url)
 
-      result = token.get(settings['git_remote_url'] + '/api/v3/user')
+      result = token.get(settings['git_remote_url'] + "/api/v#{Setting.plugin_redmine_gitlab_hook['gitlab_api_v4'] ? 4 : 3}/user")
       info = JSON.parse(result.body)
       puts(info)
       puts("email : " + info["email"])

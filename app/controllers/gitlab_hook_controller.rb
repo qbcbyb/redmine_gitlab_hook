@@ -7,11 +7,17 @@ class GitlabHookController < ApplicationController
   # (skip_before_filter :verify_authenticity_token, :check_if_login_required) if ENV['RAILS_ENV'] == 'production'
 
   def getprojects
+    gitlab_api_v4 = Setting.plugin_redmine_gitlab_hook['gitlab_api_v4']
     remote_url = Setting.plugin_redmine_gitlab_hook['git_remote_url']
     gitlab_token_value = User.current.gitlab_token_value
 
     filter = params[:filter].strip
-    response = Net::HTTP.get(URI.join(remote_url, "/api/v3/projects#{("/search/" + filter) unless filter.empty?}?access_token=#{gitlab_token_value}"))
+    path = if gitlab_api_v4
+             "/api/v3/projects#{('/search/' + filter) unless filter.empty?}?access_token=#{gitlab_token_value}"
+           else
+             "/api/v4/projects?access_token=#{gitlab_token_value}#{('&search=' + filter) unless filter.empty?}"
+           end
+    response = Net::HTTP.get(URI.join(remote_url, path))
     render(:json => JSON.parse(response.to_s))
   end
 
@@ -19,13 +25,16 @@ class GitlabHookController < ApplicationController
     host_name = Setting.host_name
     protocol = Setting.protocol
     sys_api_key = Setting.sys_api_key
+    gitlab_api_v4 = Setting.plugin_redmine_gitlab_hook['gitlab_api_v4']
     remote_url = Setting.plugin_redmine_gitlab_hook['git_remote_url']
     git_project_id = params[:git_namespace]
     redmine_project_id = params[:redmine_project_id]
 
     gitlab_token_value = User.current.gitlab_token_value
 
-    response = Net::HTTP.get(URI.join(remote_url, "/api/v3/projects/#{git_project_id}/hooks?access_token=#{gitlab_token_value}"))
+    gitlab_api_version = gitlab_api_v4 ? 4 : 3
+
+    response = Net::HTTP.get(URI.join(remote_url, "/api/v#{gitlab_api_version}/projects/#{git_project_id}/hooks?access_token=#{gitlab_token_value}"))
     hooks = JSON.parse(response.to_s)
 
     hooks.each do |hook|
@@ -34,7 +43,7 @@ class GitlabHookController < ApplicationController
       end
     end
 
-    response = Net::HTTP.post_form(URI.join(remote_url, "/api/v3/projects/#{git_project_id}/hooks?access_token=#{gitlab_token_value}"), {
+    response = Net::HTTP.post_form(URI.join(remote_url, "/api/v#{gitlab_api_version}/projects/#{git_project_id}/hooks?access_token=#{gitlab_token_value}"), {
         id: git_project_id,
         url: "#{protocol}://#{host_name}/gitlab_hook?project_id=#{redmine_project_id}&key=#{sys_api_key}",
         push_events: true,
