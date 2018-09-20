@@ -1,10 +1,51 @@
 require 'json'
 
-class GitlabHookController < ActionController::Base
+class GitlabHookController < ApplicationController
 
   GIT_BIN = Redmine::Configuration[:scm_git_command] || 'git'
   skip_before_filter :verify_authenticity_token, :check_if_login_required
+  # (skip_before_filter :verify_authenticity_token, :check_if_login_required) if ENV['RAILS_ENV'] == 'production'
 
+  def getprojects
+    remote_url = Setting.plugin_redmine_gitlab_hook['git_remote_url']
+    gitlab_token_value = User.current.gitlab_token_value
+
+    filter = params[:filter].strip
+    response = Net::HTTP.get(URI.join(remote_url, "/api/v3/projects#{("/search/" + filter) unless filter.empty?}?access_token=#{gitlab_token_value}"))
+    render(:json => JSON.parse(response.to_s))
+  end
+
+  def setwebhook
+    host_name = Setting.host_name
+    protocol = Setting.protocol
+    sys_api_key = Setting.sys_api_key
+    remote_url = Setting.plugin_redmine_gitlab_hook['git_remote_url']
+    git_project_id = params[:git_namespace]
+    redmine_project_id = params[:redmine_project_id]
+
+    gitlab_token_value = User.current.gitlab_token_value
+
+    response = Net::HTTP.get(URI.join(remote_url, "/api/v3/projects/#{git_project_id}/hooks?access_token=#{gitlab_token_value}"))
+    hooks = JSON.parse(response.to_s)
+
+    hooks.each do |hook|
+      if hook['url'].include?(host_name)
+        return render(:json => {success: false, message: "webhook exist"})
+      end
+    end
+
+    response = Net::HTTP.post_form(URI.join(remote_url, "/api/v3/projects/#{git_project_id}/hooks?access_token=#{gitlab_token_value}"), {
+        id: git_project_id,
+        url: "#{protocol}://#{host_name}/gitlab_hook?project_id=#{redmine_project_id}&key=#{sys_api_key}",
+        push_events: true,
+        merge_requests_events: true,
+        tag_push_events: true,
+        enable_ssl_verification: false
+    })
+    result = JSON.parse(response.body)
+    result['message'] = "Add Success"
+    render(:json => result)
+  end
 
   def index
     if request.post?
@@ -34,7 +75,7 @@ class GitlabHookController < ActionController::Base
 
   # Executes shell command. Returns true if the shell command exits with a success status code
   def exec(command)
-    logger.debug { "GitLabHook: Executing command: '#{command}'" }
+    logger.debug {"GitLabHook: Executing command: '#{command}'"}
 
     # Get a path to a temp file
     logfile = Tempfile.new('gitlab_hook_exec')
@@ -43,9 +84,9 @@ class GitlabHookController < ActionController::Base
     success = system("#{command} > #{logfile.path} 2>&1")
     output_from_command = File.readlines(logfile.path)
     if success
-      logger.debug { "GitLabHook: Command output: #{output_from_command.inspect}"}
+      logger.debug {"GitLabHook: Command output: #{output_from_command.inspect}"}
     else
-      logger.error { "GitLabHook: Command '#{command}' didn't exit properly. Full output: #{output_from_command.inspect}"}
+      logger.error {"GitLabHook: Command '#{command}' didn't exit properly. Full output: #{output_from_command.inspect}"}
     end
 
     return success
@@ -147,6 +188,7 @@ class GitlabHookController < ActionController::Base
 
     identifier = get_repository_identifier
     remote_url = params[:project][:git_http_url]
+    web_url = params[:project][:web_url]
     prefix = Setting.plugin_redmine_gitlab_hook['git_command_prefix'].to_s
 
     raise TypeError, 'Remote repository URL is null' unless remote_url.present?
@@ -169,8 +211,13 @@ class GitlabHookController < ActionController::Base
     repository.url = local_url
     repository.is_default = true
     repository.project = project
+
+    # 加入redmine_remote_revision_url的自动配置
+    repository.merge_extra_info :extra_remote_revision_url => URI.join(web_url, '/commit/:revision')
+    repository.merge_extra_info :extra_remote_revision_text => URI.parse(web_url).host
+
     repository.save
-    return repository
+    repository
   end
 
 end

@@ -1,5 +1,12 @@
 # English strings go here
 en:
+  notice_unable_to_obtain_gitlab_credentials: "Unable to obtain credentials from gitlab."
+  notice_domain_not_allowed: "You can not login using %{domain} domain."
+  notice_access_denied: "You must allow to use you gitlab credentials to enter this site."
+  login_via_gitlab: "Login via gitlab"
+  field_git_namespace: Git Name Space
+  value_git_namespace_none: None
+  genrate_gitlab_webhook: Generate Webhook
   git_pull_type: Git pull type
   all_branches:
     label: All branches

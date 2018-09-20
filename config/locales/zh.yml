@@ -1,5 +1,12 @@
 # Simplified Chinese strings go here
 zh:
+  notice_unable_to_obtain_gitlab_credentials: "gitlab认证失败"
+  notice_domain_not_allowed: "域名%{domain}不被允许"
+  notice_access_denied: "管理员尚未开放gitlab认证"
+  login_via_gitlab: "Gitlab登录"
+  field_git_namespace: Git项目目录
+  value_git_namespace_none: 无
+  genrate_gitlab_webhook: 生成Webhook
   git_pull_type: Git pull 类型
   all_branches:
     label: 全部分支

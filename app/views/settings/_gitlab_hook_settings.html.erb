@@ -1,57 +1,78 @@
 <fieldset>
-    <legend><%= l(:git_pull_type) %></legend>
-    <p>
-        <%= content_tag(:label, l('all_branches.label')) %>
-        <%= check_box_tag('settings[all_branches]', 'yes', settings['all_branches'] == 'yes' ) %>
-        <em class="info"><%= l('all_branches.description') %></em>
-    </p>
+  <legend><%= l(:git_pull_type) %></legend>
+  <p>
+    <%= content_tag(:label, l('all_branches.label')) %>
+    <%= check_box_tag('settings[all_branches]', 'yes', settings['all_branches'] == 'yes') %>
+    <em class="info"><%= l('all_branches.description') %></em>
+  </p>
 
-    <p>
-        <%= content_tag(:label, l('prune.label')) %>
-        <%= check_box_tag('settings[prune]', 'yes', settings['prune'] == 'yes' ) %>
-        <em class="info"><%= l('prune.description') %></em>
-    </p>
+  <p>
+    <%= content_tag(:label, l('prune.label')) %>
+    <%= check_box_tag('settings[prune]', 'yes', settings['prune'] == 'yes') %>
+    <em class="info"><%= l('prune.description') %></em>
+  </p>
 
-    <p>
-        <%= content_tag(:label, l('auto_create.label')) %>
-        <%= check_box_tag('settings[auto_create]', 'yes', settings['auto_create'] == 'yes' ) %>
-        <em class="info"><%= l('auto_create.description') %></em>
-    </p>
+  <p>
+    <%= content_tag(:label, l('auto_create.label')) %>
+    <%= check_box_tag('settings[auto_create]', 'yes', settings['auto_create'] == 'yes') %>
+    <em class="info"><%= l('auto_create.description') %></em>
+  </p>
 
-    <p>
-        <%= content_tag(:label, l('local_repositories_path.label')) %>
-        <%= text_field_tag('settings[local_repositories_path]', settings['local_repositories_path'], :size => 50) %>
-        <em class="info"><%= l('local_repositories_path.description') %></em>
-    </p>
+  <p>
+    <%= content_tag(:label, l('local_repositories_path.label')) %>
+    <%= text_field_tag('settings[local_repositories_path]', settings['local_repositories_path'], :size => 50) %>
+    <em class="info"><%= l('local_repositories_path.description') %></em>
+  </p>
 
-    <p>
-        <%= content_tag(:label, l('git_command_prefix.label')) %>
-        <%= text_field_tag('settings[git_command_prefix]', settings['git_command_prefix'], :size => 50) %>
-        <em class="info"><%= l('git_command_prefix.description') %></em>
-    </p>
+  <p>
+    <%= content_tag(:label, l('git_command_prefix.label')) %>
+    <%= text_field_tag('settings[git_command_prefix]', settings['git_command_prefix'], :size => 50) %>
+    <em class="info"><%= l('git_command_prefix.description') %></em>
+  </p>
 
-    <p>
-        <%= content_tag(:label, l('fetch_updates.label')) %>
-        <%= check_box_tag('settings[fetch_updates]', 'yes', settings['fetch_updates'] == 'yes' ) %>
-        <em class="info"><%= l('fetch_updates.description') %></em>
-    </p>
+  <p>
+    <%= content_tag(:label, l('fetch_updates.label')) %>
+    <%= check_box_tag('settings[fetch_updates]', 'yes', settings['fetch_updates'] == 'yes') %>
+    <em class="info"><%= l('fetch_updates.description') %></em>
+  </p>
 
-    <p>
-        <%= content_tag(:label, l('git_user_name.label')) %>
-        <%= text_field_tag('settings[git_user_name]', settings['git_user_name'], :size => 50) %>
-        <em class="info"><%= l('git_user_name.description') %></em>
-    </p>
+  <p>
+    <%= content_tag(:label, l('git_user_name.label')) %>
+    <%= text_field_tag('settings[git_user_name]', settings['git_user_name'], :size => 50) %>
+    <em class="info"><%= l('git_user_name.description') %></em>
+  </p>
 
-    <p>
-        <%= content_tag(:label, l('git_user_password.label')) %>
-        <%= password_field_tag('settings[git_user_password]', settings['git_user_password'], :size => 50) %>
-        <em class="info"><%= l('git_user_password.description') %></em>
-    </p>
+  <p>
+    <%= content_tag(:label, l('git_user_password.label')) %>
+    <%= password_field_tag('settings[git_user_password]', settings['git_user_password'], :size => 50) %>
+    <em class="info"><%= l('git_user_password.description') %></em>
+  </p>
 
-    <p>
-        <%= content_tag(:label, l('git_remote_url.label')) %>
-        <%= text_field_tag('settings[git_remote_url]', settings['git_remote_url'], :size => 50) %>
-        <em class="info"><%= l('git_remote_url.description') %></em>
-    </p>
-    
+  <p>
+    <%= content_tag(:label, l('git_remote_url.label')) %>
+    <%= text_field_tag('settings[git_remote_url]', settings['git_remote_url'], :size => 50) %>
+    <em class="info"><%= l('git_remote_url.description') %></em>
+  </p>
+  <p>
+    <label>Client ID:</label>
+    <%= text_field_tag 'settings[client_id]', @settings['client_id'] %>
+  </p>
+  <p>
+    <label>Client Secret:</label>
+    <%= text_field_tag 'settings[client_secret]', @settings['client_secret'] %>
+  </p>
+  <p>
+    <label>Available domains</label>
+    <%= text_area_tag 'settings[allowed_domains]', @settings['allowed_domains'], :rows => 5 %>
+  </p>
+  <p>
+    <label>Oauth authentification:</label>
+    <%= check_box_tag 'settings[oauth_authentification]', true, @settings['oauth_authentification'] %>
+  </p>
+  <p>
+    <label>Register Enable:</label>
+    <%= check_box_tag 'settings[register_enable]', false, @settings['register_enable'] %>
+  </p>
+
+
 </fieldset>
