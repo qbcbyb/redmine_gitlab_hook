@@ -60,23 +60,21 @@ User.class_eval do
   has_one :gitlab_token, lambda {where "action='gitlab_token'"}, :class_name => 'Token'
 
   def gitlab_refresh_token_value
-    create_gitlab_refresh_token(:action => 'gitlab_refresh_token') if gitlab_refresh_token.nil?
     gitlab_refresh_token.try(:value)
   end
 
   def gitlab_token_value
-    create_gitlab_token(:action => 'gitlab_token') if gitlab_token.nil?
     gitlab_token.try(:value)
   end
 
   def gitlab_refresh_token= (arg)
-    token = gitlab_refresh_token || create_gitlab_refresh_token(:action => 'gitlab_refresh_token')
+    token = gitlab_refresh_token || build_gitlab_refresh_token(:action => 'gitlab_refresh_token')
     token.value = arg
     token.save
   end
 
   def gitlab_token= (arg)
-    token = gitlab_token || create_gitlab_token(:action => 'gitlab_token')
+    token = gitlab_token || build_gitlab_token(:action => 'gitlab_token')
     token.value = arg
     token.save
   end

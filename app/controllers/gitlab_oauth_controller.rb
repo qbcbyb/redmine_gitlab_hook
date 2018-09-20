@@ -1,4 +1,3 @@
-require 'account_controller'
 require 'json'
 
 class GitlabOauthController < AccountController
@@ -44,9 +43,6 @@ class GitlabOauthController < AccountController
     session.delete(:back_url)
     user = User.joins(:email_addresses).where(:email_addresses => {:address => info["email"]}).first_or_create
 
-    user.gitlab_refresh_token = token.refresh_token
-    user.gitlab_token = token.token
-
     if user.new_record?
       # Self-registration off
       redirect_to(home_url) && return unless Setting.self_registration?
@@ -89,6 +85,9 @@ class GitlabOauthController < AccountController
         end
       end
     end
+
+    user.gitlab_refresh_token = token.refresh_token
+    user.gitlab_token = token.token
   end
 
   def oauth_client
