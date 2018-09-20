@@ -3,8 +3,8 @@ require 'json'
 class GitlabHookController < ApplicationController
 
   GIT_BIN = Redmine::Configuration[:scm_git_command] || 'git'
-  skip_before_filter :verify_authenticity_token, :check_if_login_required
-  # (skip_before_filter :verify_authenticity_token, :check_if_login_required) if ENV['RAILS_ENV'] == 'production'
+  # skip_before_filter :verify_authenticity_token, :check_if_login_required
+  (skip_before_filter :verify_authenticity_token, :check_if_login_required) if ENV['RAILS_ENV'] == 'production'
 
   def getprojects
     gitlab_api_v4 = Setting.plugin_redmine_gitlab_hook['gitlab_api_v4']
@@ -12,7 +12,7 @@ class GitlabHookController < ApplicationController
     gitlab_token_value = User.current.gitlab_token_value
 
     filter = params[:filter].strip
-    path = if gitlab_api_v4
+    path = unless gitlab_api_v4
              "/api/v3/projects#{('/search/' + filter) unless filter.empty?}?access_token=#{gitlab_token_value}"
            else
              "/api/v4/projects?access_token=#{gitlab_token_value}#{('&search=' + filter) unless filter.empty?}"
