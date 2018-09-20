@@ -1,4 +1,4 @@
-class ChangeTokensValueLimitTo64 < ActiveRecord::Migration
+class ChangeTokensValueLengthLimitTo64 < ActiveRecord::Migration
   def self.up
     change_column :tokens, :value, :string, :limit => 64, :default => "", :null => false
   end
