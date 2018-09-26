@@ -98,6 +98,8 @@ Setting.class_eval do
       uri.userinfo = "#{encoded_user_name}:#{encoded_password}"
       remote_url = uri.to_s
       system "echo \"#{remote_url}\" > ~/.git-credentials"
+    else
+      logger.error {"Setting.plugin_redmine_gitlab_hook: #{setting.to_s}"}
     end
   end
 end
