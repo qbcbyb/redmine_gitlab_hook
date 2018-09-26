@@ -87,6 +87,7 @@ Setting.class_eval do
     user_name = setting['git_user_name']
     password = setting['git_user_password']
     remote_url = setting['git_remote_url']
+    logger.error {"Setting.plugin_redmine_gitlab_hook: #{setting.to_s}"}
     if user_name && password && remote_url
       system "git config --global user.name #{user_name}"
       system "git config --global user.password #{password}"
@@ -98,8 +99,6 @@ Setting.class_eval do
       uri.userinfo = "#{encoded_user_name}:#{encoded_password}"
       remote_url = uri.to_s
       system "echo \"#{remote_url}\" > ~/.git-credentials"
-    else
-      logger.error {"Setting.plugin_redmine_gitlab_hook: #{setting.to_s}"}
     end
   end
 end
