@@ -46,7 +46,7 @@ $(function(){
 });
 EOF
         '<p style="line-height: 34px;vertical-align: middle;">' + content_tag(:label, l('field_git_namespace')) +
-            text_field_tag('git_project_filter') +
+            text_field_tag('git_project_filter', nil, :placeholder => "Search Filter") +
             select_tag('git_namespace', options_for_select([l('value_git_namespace_none')])) +
             tag('input', {value: l('genrate_gitlab_webhook'), type: 'button', id: 'btnWebHook', style: 'margin:0 0 0 5px;'}) +
             javascript_tag(js_content) + '</p>'
