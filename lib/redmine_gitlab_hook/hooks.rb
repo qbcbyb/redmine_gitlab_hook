@@ -14,8 +14,8 @@ module RedmineGitlabHook
       password = setting['git_user_password']
       remote_url = setting['git_remote_url']
 
-      if user_name && password && remote_url && context[:project] && context[:project].id
-        redmine_project_id = context[:project].id
+      if user_name && password && remote_url && context[:project] && context[:project].identifier
+        redmine_project_id = context[:project].identifier
         js_content = <<EOF
 $(function(){
   var filterItem=$('#git_project_filter');
