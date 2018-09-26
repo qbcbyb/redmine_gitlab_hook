@@ -9,7 +9,7 @@ class GitlabHookController < ApplicationController
   def getprojects
     gitlab_api_v4 = Setting.plugin_redmine_gitlab_hook['gitlab_api_v4']
     remote_url = Setting.plugin_redmine_gitlab_hook['git_remote_url']
-    gitlab_token_value = User.current.gitlab_token_value
+    gitlab_token_value = User.current.try('gitlab_token_value')
 
     filter = params[:filter].strip
     path = unless gitlab_api_v4
@@ -30,7 +30,7 @@ class GitlabHookController < ApplicationController
     git_project_id = params[:git_namespace]
     redmine_project_id = params[:redmine_project_id]
 
-    gitlab_token_value = User.current.gitlab_token_value
+    gitlab_token_value = User.current.try('gitlab_token_value')
 
     gitlab_api_version = gitlab_api_v4 ? 4 : 3
 
