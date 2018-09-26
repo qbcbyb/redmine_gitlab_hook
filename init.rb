@@ -25,8 +25,58 @@ Redmine::Plugin.register :redmine_gitlab_hook do
       :register_enable => false
   }, :partial => 'settings/gitlab_hook_settings'
 
-  Redmine::MenuManager.map :account_menu do |menu|
-    menu.delete :register
-    menu.push :register, :register_path, :if => Proc.new {!User.current.logged? && Setting.self_registration? && Setting.plugin_redmine_gitlab_hook['register_enable']}
+
+end
+
+Redmine::MenuManager.map :account_menu do |menu|
+  menu.delete :register
+  menu.push :register, :register_path, :if => Proc.new {!User.current.logged? && Setting.self_registration? && Setting.plugin_redmine_gitlab_hook['register_enable']}
+end
+
+User.class_eval do
+  has_one :gitlab_refresh_token, lambda {where "action='gitlab_refresh_token'"}, :class_name => 'Token'
+  has_one :gitlab_token, lambda {where "action='gitlab_token'"}, :class_name => 'Token'
+
+  def gitlab_refresh_token_value
+    gitlab_refresh_token.try(:value)
+  end
+
+  def gitlab_token_value
+    gitlab_token.try(:value)
+  end
+
+  def gitlab_refresh_token= (arg)
+    token = gitlab_refresh_token || build_gitlab_refresh_token(:action => 'gitlab_refresh_token')
+    token.value = arg
+    token.save
+  end
+
+  def gitlab_token= (arg)
+    token = gitlab_token || build_gitlab_token(:action => 'gitlab_token')
+    token.value = arg
+    token.save
+  end
+end
+
+Setting.class_eval do
+
+  def self.plugin_redmine_gitlab_hook= (setting)
+    self[:plugin_redmine_gitlab_hook] = setting
+
+    user_name = setting['git_user_name']
+    password = setting['git_user_password']
+    remote_url = setting['git_remote_url']
+    if user_name && password && remote_url
+      system "git config --global user.name #{user_name}"
+      system "git config --global user.password #{password}"
+      system "git config --global credential.helper store"
+
+      encoded_user_name = URI.encode_www_form_component(user_name)
+      encoded_password = URI.encode_www_form_component(password)
+      uri = URI.parse(remote_url)
+      uri.userinfo = "#{encoded_user_name}:#{encoded_password}"
+      remote_url = uri.to_s
+      system "echo \"#{remote_url}\" > ~/.git-credentials"
+    end
   end
 end
