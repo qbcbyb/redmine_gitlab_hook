@@ -193,16 +193,28 @@ class GitlabHookController < ApplicationController
 
   def create_repository(project)
     logger.debug('Trying to create repository...')
-    raise TypeError, 'Local repository path is not set' unless Setting.plugin_redmine_gitlab_hook['local_repositories_path'].to_s.present?
+    setting = Setting.plugin_redmine_gitlab_hook
+    raise TypeError, 'Local repository path is not set' unless setting['local_repositories_path'].to_s.present?
 
     identifier = get_repository_identifier
     remote_url = params[:project][:git_http_url]
+
+    user_name = setting['git_user_name']
+    password = setting['git_user_password']
+    if user_name && password
+      encoded_user_name = URI.encode_www_form_component(user_name)
+      encoded_password = URI.encode_www_form_component(password)
+      uri = URI.parse(remote_url)
+      uri.userinfo = "#{encoded_user_name}:#{encoded_password}"
+      remote_url = uri.to_s
+    end
+
     web_url = params[:project][:web_url]
-    prefix = Setting.plugin_redmine_gitlab_hook['git_command_prefix'].to_s
+    prefix = setting['git_command_prefix'].to_s
 
     raise TypeError, 'Remote repository URL is null' unless remote_url.present?
 
-    local_root_path = Setting.plugin_redmine_gitlab_hook['local_repositories_path']
+    local_root_path = setting['local_repositories_path']
     repo_namespace = get_repository_namespace
     repo_name = get_repository_name
     local_url = File.join(local_root_path, repo_namespace, repo_name)
