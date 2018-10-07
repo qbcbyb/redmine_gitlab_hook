@@ -234,7 +234,7 @@ class GitlabHookController < ApplicationController
     repository.project = project
 
     # 加入redmine_remote_revision_url的自动配置
-    repository.merge_extra_info :extra_remote_revision_url => URI.join(web_url, '/commit/:revision').to_s
+    repository.merge_extra_info :extra_remote_revision_url => (web_url + '/commit/:revision')
     repository.merge_extra_info :extra_remote_revision_text => URI.parse(web_url).host
 
     repository.save
